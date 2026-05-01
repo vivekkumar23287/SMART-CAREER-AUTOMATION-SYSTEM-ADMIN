@@ -14,15 +14,34 @@ function getDaysLeft(expiryDate: string) {
   return diffDays;
 }
 
+interface AppUser {
+  id: number;
+  full_name: string;
+  email: string;
+  resume_url?: string;
+  job_title: string;
+  job_description?: string;
+  application_date: string;
+  source?: string;
+  location?: string;
+  status?: string;
+  hr_name?: string;
+  hr_email?: string;
+  salary?: string;
+  job_url?: string;
+  notes?: string;
+  expires_at?: string;
+}
+
 export default function UsersPage() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<AppUser[]>([]);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchUsers = async (query = '') => {
+  const fetchUsers = async (queryParam = '') => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/users?search=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/users?search=${encodeURIComponent(queryParam)}`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setUsers(data);
@@ -45,7 +64,7 @@ export default function UsersPage() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<AppUser | null>(null);
 
   return (
     <DashboardLayout>
@@ -94,7 +113,7 @@ export default function UsersPage() {
                       </td>
                     </tr>
                   ) : (
-                    Array.isArray(users) && users.map((user: any) => (
+                    Array.isArray(users) && users.map((user) => (
                       <motion.tr 
                         key={user.id}
                         initial={{ opacity: 0 }}
@@ -128,7 +147,7 @@ export default function UsersPage() {
                         </td>
                         <td className="px-6 py-4 text-center">
                           {(() => {
-                            const days = getDaysLeft(user.expires_at);
+                            const days = getDaysLeft(user.expires_at || '');
                             if (days === null) return <span className="text-gray-600 text-[10px]">No Subscription</span>;
                             if (days <= 0) return <span className="text-red-500 text-[10px] font-bold">EXPIRED</span>;
                             return (
@@ -206,18 +225,18 @@ export default function UsersPage() {
                   {/* Core Stats */}
                   <div className="grid grid-cols-2 gap-4">
                     <DetailItem label="Status" value={selectedUser.status || 'Applied'} highlight />
-                    <DetailItem label="Date" value={new Date(selectedUser.application_date).toLocaleDateString()} />
+                    <DetailItem label="Date" value={selectedUser.application_date ? new Date(selectedUser.application_date).toLocaleDateString() : 'N/A'} />
                     <DetailItem label="Source" value={selectedUser.source || 'Direct'} />
                     <DetailItem 
                       label="Access Left" 
                       value={(() => {
-                        const days = getDaysLeft(selectedUser.expires_at);
+                        const days = getDaysLeft(selectedUser.expires_at || '');
                         if (days === null) return 'No Access';
                         if (days <= 0) return 'Expired';
                         return `${days} Days Remaining`;
                       })()} 
-                      highlight={getDaysLeft(selectedUser.expires_at) !== null && getDaysLeft(selectedUser.expires_at)! > 0}
-                      alert={getDaysLeft(selectedUser.expires_at) !== null && getDaysLeft(selectedUser.expires_at)! <= 0}
+                      highlight={selectedUser.expires_at ? (getDaysLeft(selectedUser.expires_at) ?? 0) > 0 : false}
+                      alert={selectedUser.expires_at ? (getDaysLeft(selectedUser.expires_at) ?? 0) <= 0 : false}
                     />
                   </div>
 

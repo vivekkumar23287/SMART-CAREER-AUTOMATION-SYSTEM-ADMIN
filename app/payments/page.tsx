@@ -14,11 +14,20 @@ function getDaysLeft(expiryDate: string) {
   return diffDays;
 }
 
+interface Payment {
+  id: number;
+  user_email: string;
+  utr_number: string;
+  screenshot_b64?: string;
+  status: string;
+  current_expiry?: string;
+}
+
 export default function PaymentsPage() {
-  const [payments, setPayments] = useState([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [processingId, setProcessingId] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [processingId, setProcessingId] = useState<number | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const fetchPayments = async () => {
     setIsLoading(true);
@@ -52,7 +61,7 @@ export default function PaymentsPage() {
         body: JSON.stringify({ id }),
       });
       if (res.ok) {
-        setPayments(payments.filter((p: any) => p.id !== id));
+        setPayments(payments.filter((p) => p.id !== id));
       }
     } catch (err) {
       console.error(err);
@@ -92,7 +101,7 @@ export default function PaymentsPage() {
         ) : (
           <div className="grid grid-cols-1 gap-4">
             <AnimatePresence>
-              {Array.isArray(payments) && payments.map((payment: any) => (
+              {Array.isArray(payments) && payments.map((payment) => (
                 <motion.div
                   key={payment.id}
                   initial={{ opacity: 0, x: -20 }}
@@ -104,7 +113,7 @@ export default function PaymentsPage() {
                     {payment.screenshot_b64 ? (
                       <div 
                         className="relative w-32 h-20 rounded-lg overflow-hidden border border-white/10 cursor-pointer group"
-                        onClick={() => setSelectedImage(payment.screenshot_b64)}
+                        onClick={() => setSelectedImage(payment.screenshot_b64 || null)}
                       >
                         <img 
                           src={payment.screenshot_b64.startsWith('data:') ? payment.screenshot_b64 : `data:image/png;base64,${payment.screenshot_b64}`} 
@@ -135,7 +144,7 @@ export default function PaymentsPage() {
                           <div className="flex items-center gap-2 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded">
                             <Clock size={12} className="text-green-500" />
                             <span className="text-[10px] text-green-500 font-bold uppercase tracking-tighter">
-                              {getDaysLeft(payment.current_expiry)! > 0 
+                              {(getDaysLeft(payment.current_expiry) ?? 0) > 0 
                                 ? `Active: ${getDaysLeft(payment.current_expiry)}d left` 
                                 : 'Previous Access Expired'}
                             </span>
