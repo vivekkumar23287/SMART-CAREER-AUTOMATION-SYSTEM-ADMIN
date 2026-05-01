@@ -5,10 +5,10 @@ export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
 
-    const adminEmail = process.env.ADMIN_EMAIL || 'addmin739@gmail.com';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const adminEmail = (process.env.ADMIN_EMAIL || 'addmin739@gmail.com').trim();
+    const adminPassword = (process.env.ADMIN_PASSWORD || 'admin123').trim();
 
-    if (email === adminEmail && password === adminPassword) {
+    if (email?.trim() === adminEmail && password?.trim() === adminPassword) {
       // In a real app, use a proper JWT and sign it
       // Here we use a simple token for demonstration
       const sessionToken = Buffer.from(`${email}:${Date.now()}`).toString('base64');
