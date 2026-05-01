@@ -25,6 +25,7 @@ export default function LoginPage() {
       });
 
       if (res.ok) {
+        sessionStorage.setItem('admin_tab_active', 'true');
         router.push('/');
         router.refresh();
       } else {
