@@ -7,9 +7,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "SMART CAREER AUTOMATION SYSTEM | ADMIN",
   description: "Premium Admin Dashboard for Smart Career Automation",
-  icons: {
-    icon: "/ADMIN.png",
-  },
 };
 
 export default function RootLayout({
