@@ -16,6 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32" />
+        <link rel="shortcut icon" href="/favicon.png" />
+      </head>
       <body className={`${inter.className} bg-[#0F0F0F] text-white min-h-screen overflow-x-hidden`}>
         {children}
       </body>
