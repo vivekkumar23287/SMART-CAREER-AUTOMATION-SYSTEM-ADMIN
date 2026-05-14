@@ -5,10 +5,10 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Smart Career Automation | Admin Dashboard",
+  title: "SMART CAREER AUTOMATION SYSTEM | ADMIN",
   description: "Premium Admin Dashboard for Smart Career Automation",
   icons: {
-    icon: "/images/Logo.png",
+    icon: "/ADMIN.png",
   },
 };
 
